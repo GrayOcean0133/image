@@ -39,7 +39,17 @@ function clamp(v: number, lo: number, hi: number): number {
 function loadLayout(): LayoutState {
   try {
     const raw = localStorage.getItem(LAYOUT_KEY)
-    if (raw) return { ...DEFAULT_LAYOUT, ...(JSON.parse(raw) as Partial<LayoutState>) }
+    if (raw) {
+      const parsed = JSON.parse(raw) as Partial<LayoutState>
+      // 夹紧历史/脏数据，避免极端宽度把布局搞坏
+      return {
+        leftWidth: clamp(Number(parsed.leftWidth) || DEFAULT_LAYOUT.leftWidth, 160, 600),
+        rightWidth: clamp(Number(parsed.rightWidth) || DEFAULT_LAYOUT.rightWidth, 160, 600),
+        mainRatio: clamp(Number(parsed.mainRatio) || DEFAULT_LAYOUT.mainRatio, 0.2, 0.8),
+        leftCollapsed: Boolean(parsed.leftCollapsed),
+        rightCollapsed: Boolean(parsed.rightCollapsed)
+      }
+    }
   } catch {
     // 回退默认布局
   }
@@ -229,6 +239,14 @@ function App(): React.JSX.Element {
             <section className="sidebar-block">
               <h2 className="panel-title">同步</h2>
               <p className="panel-hint">未配置</p>
+            </section>
+
+            <section className="sidebar-block">
+              <h2 className="panel-title">布局</h2>
+              <p className="panel-hint">拖动列间分割条调宽；顶栏 ◀ ▶ 折叠两侧栏</p>
+              <button className="tool" type="button" onClick={() => setLayout(DEFAULT_LAYOUT)}>
+                重置布局
+              </button>
             </section>
           </aside>
         )}
