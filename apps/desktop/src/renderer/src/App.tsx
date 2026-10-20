@@ -26,7 +26,7 @@ function App(): React.JSX.Element {
         <section className="panel main-left">
           <h2 className="panel-title">题目</h2>
           <p className="panel-hint">左主栏 · 题目 + 手写答题区</p>
-          <div className="placeholder">
+          <div className="placeholder question">
             <span>题目渲染区</span>
             <small>Markdown + LaTeX</small>
           </div>

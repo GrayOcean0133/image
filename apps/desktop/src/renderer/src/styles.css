@@ -80,7 +80,28 @@ body {
   background: var(--panel);
   min-width: 0;
   min-height: 0;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #2b3340 transparent;
+}
+
+.panel::-webkit-scrollbar {
+  width: 10px;
+}
+
+.panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.panel::-webkit-scrollbar-thumb {
+  background: #2b3340;
+  border-radius: 6px;
+  border: 2px solid var(--panel);
+}
+
+.panel::-webkit-scrollbar-thumb:hover {
+  background: #3a4453;
 }
 
 .panel-title {
@@ -133,7 +154,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 4px;
-  flex: 1;
+  flex: 0 0 auto;
   min-height: 120px;
   border: 1px dashed var(--border);
   border-radius: 10px;
@@ -146,13 +167,23 @@ body {
   );
 }
 
-.placeholder.answer {
-  flex: 0 0 38%;
+/* 左主栏：题目 + 答题区，各自可滚，内容高过视口即出现纵向滚动 */
+.placeholder.question {
+  min-height: 38vh;
 }
 
-.placeholder.draft,
+.placeholder.answer {
+  min-height: 62vh;
+}
+
+/* 右主栏：草稿纸做成"长纸"，超过一屏，靠上下滚动 */
+.placeholder.draft {
+  min-height: 145vh;
+}
+
 .placeholder.tools {
   flex: 1;
+  min-height: 260px;
 }
 
 .placeholder span {
