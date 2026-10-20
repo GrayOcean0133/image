@@ -1,5 +1,7 @@
 # .image
 
+[![CI](https://github.com/GrayOcean0133/image/actions/workflows/ci.yml/badge.svg)](https://github.com/GrayOcean0133/image/actions/workflows/ci.yml)
+
 > 读作 "dot image"
 
 理工科学生的 **手写笔记 / 判题 / 纠错** 三合一软件。
