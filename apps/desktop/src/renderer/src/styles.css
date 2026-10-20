@@ -199,6 +199,41 @@ body {
   line-height: 1.9;
 }
 
+/* 第三方插件注册的面板 */
+.plugin-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel-2);
+}
+
+.plugin-title {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.plugin-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.plugin-card p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.plugin-card code {
+  color: var(--accent);
+  font-size: 11px;
+}
+
 @media (max-width: 1200px) {
   .layout {
     grid-template-columns: 180px minmax(0, 1fr) minmax(0, 1fr) 220px;

@@ -54,8 +54,24 @@ npm run build      # 构建
 
 ```
 apps/desktop       Electron + React + TypeScript 桌面客户端
+packages/plugin-api 第三方插件 API（类型 + 注册表）
 docs/plan.md       产品与技术方案（数据模型、判题链、成本估算）
+docs/plugin-api.md 插件开发文档
 ```
+
+## 插件系统
+
+`.image` 预留了第三方插件接口，插件可以给右侧栏加工具面板、注册判题器、题目导入器、草稿纸纸型和模型适配：
+
+| 贡献点 | API |
+| --- | --- |
+| 右侧栏工具面板 | `ctx.api.addPanel()` |
+| 判题器 | `ctx.api.addJudge()` |
+| 题目导入器 | `ctx.api.addImporter()` |
+| 草稿纸纸型 | `ctx.api.addPaper()` |
+| LLM 供应商适配 | `ctx.api.addProvider()` |
+
+详见 [docs/plugin-api.md](docs/plugin-api.md)。示例插件在 `apps/desktop/src/renderer/src/plugins/hello.tsx`。
 
 ## 路线图
 

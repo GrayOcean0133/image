@@ -1,0 +1,14 @@
+{
+  "name": "@image/plugin-api",
+  "version": "0.1.0",
+  "description": ".image 第三方插件 API（类型 + 注册表）",
+  "license": "MIT",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "files": [
+    "src"
+  ],
+  "peerDependencies": {
+    "react": ">=19"
+  }
+}

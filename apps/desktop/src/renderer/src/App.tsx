@@ -1,6 +1,18 @@
+import { useEffect, useState } from 'react'
+import { registry, type PanelContribution } from '@image/plugin-api'
+import { helloPlugin } from './plugins/hello'
 import './styles.css'
 
 function App(): React.JSX.Element {
+  const [pluginPanels, setPluginPanels] = useState<PanelContribution[]>([])
+
+  useEffect(() => {
+    registry
+      .load(helloPlugin)
+      .then(() => setPluginPanels(registry.listPanels()))
+      .catch((err) => console.error('[image] plugin load failed', err))
+  }, [])
+
   return (
     <div className="app">
       <header className="topbar">
@@ -66,6 +78,13 @@ function App(): React.JSX.Element {
             <span>函数图像</span>
             <small>LaTeX · 2D / 3D · 参数旋钮</small>
           </div>
+          {pluginPanels.map((panel) => (
+            <section className="plugin-panel" key={panel.id}>
+              <h3 className="plugin-title">{panel.title}</h3>
+              {panel.description ? <p className="panel-hint">{panel.description}</p> : null}
+              {panel.render()}
+            </section>
+          ))}
         </aside>
       </main>
     </div>
