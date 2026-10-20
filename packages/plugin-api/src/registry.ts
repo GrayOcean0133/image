@@ -62,28 +62,39 @@ export class PluginRegistry {
   private providers = new Map<string, ProviderContribution>()
   private loaded = new Set<string>()
 
+  /** 贡献点 id -> 插件 id，卸载时据此精确回收 */
+  private owners = new Map<string, string>()
+
   /** 为某个插件构造受限的注册 API */
   apiFor(pluginId: string): ImageApi {
+    const own = (kind: string, id: string): void => {
+      this.owners.set(`${kind}:${id}`, pluginId)
+    }
     return {
       addPanel: (panel) => {
         assertUnique(this.panels, panel.id, 'panel')
         this.panels.set(panel.id, panel)
+        own('panel', panel.id)
       },
       addJudge: (judge) => {
         assertUnique(this.judges, judge.id, 'judge')
         this.judges.set(judge.id, judge)
+        own('judge', judge.id)
       },
       addImporter: (importer) => {
         assertUnique(this.importers, importer.id, 'importer')
         this.importers.set(importer.id, importer)
+        own('importer', importer.id)
       },
       addPaper: (paper) => {
         assertUnique(this.papers, paper.id, 'paper')
         this.papers.set(paper.id, paper)
+        own('paper', paper.id)
       },
       addProvider: (provider) => {
         assertUnique(this.providers, provider.id, 'provider')
         this.providers.set(provider.id, provider)
+        own('provider', provider.id)
       }
     }
   }
@@ -115,6 +126,30 @@ export class PluginRegistry {
 
   isLoaded(id: string): boolean {
     return this.loaded.has(id)
+  }
+
+  /** 卸载插件：回收它注册过的全部贡献点（宿主切换开关时调用） */
+  async unload(pluginId: string): Promise<void> {
+    const prefixKinds: Record<string, Map<string, unknown>> = {
+      panel: this.panels,
+      judge: this.judges,
+      importer: this.importers,
+      paper: this.papers,
+      provider: this.providers
+    }
+    for (const [key, owner] of this.owners) {
+      if (owner !== pluginId) continue
+      const sep = key.indexOf(':')
+      const kind = key.slice(0, sep)
+      const id = key.slice(sep + 1)
+      prefixKinds[kind]?.delete(id)
+      this.owners.delete(key)
+    }
+    this.loaded.delete(pluginId)
+  }
+
+  listLoadedPlugins(): string[] {
+    return [...this.loaded]
   }
 
   listPanels(): PanelContribution[] {
