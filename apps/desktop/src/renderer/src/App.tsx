@@ -7,6 +7,13 @@ import './styles.css'
 const PLUGINS = [helloPlugin]
 const ENABLED_KEY = 'image.plugins.enabled'
 
+const PEN_COLORS = ['#e6e9ef', '#ff6b6b', '#4f8cff', '#4ade80', '#fbbf24', '#c084fc']
+const PEN_SIZES = [
+  { label: '细', width: 1.6 },
+  { label: '中', width: 3 },
+  { label: '粗', width: 5.5 }
+]
+
 function loadEnabled(): Record<string, boolean> {
   try {
     const raw = localStorage.getItem(ENABLED_KEY)
@@ -19,6 +26,9 @@ function loadEnabled(): Record<string, boolean> {
 
 function App(): React.JSX.Element {
   const [paper, setPaper] = useState<PaperKind>('blank')
+  const [penColor, setPenColor] = useState(PEN_COLORS[0])
+  const [penWidth, setPenWidth] = useState(PEN_SIZES[1].width)
+  const [zoom, setZoom] = useState(100)
   const [enabled, setEnabled] = useState<Record<string, boolean>>(loadEnabled)
   const [pluginPanels, setPluginPanels] = useState<PanelContribution[]>([])
   const draftRef = useRef<DraftCanvasHandle>(null)
@@ -142,7 +152,54 @@ function App(): React.JSX.Element {
               </button>
             </div>
           </div>
-          <DraftCanvas ref={draftRef} paper={paper} />
+
+          <div className="draft-wrap">
+            <DraftCanvas
+              ref={draftRef}
+              paper={paper}
+              color={penColor}
+              width={penWidth}
+              onZoomChange={setZoom}
+            />
+            <div className="draft-float">
+              <div className="pen-colors">
+                {PEN_COLORS.map((c) => (
+                  <button
+                    key={c}
+                    type="button"
+                    className={`color-dot ${penColor === c ? 'active' : ''}`}
+                    style={{ background: c }}
+                    aria-label={`笔色 ${c}`}
+                    onClick={() => setPenColor(c)}
+                  />
+                ))}
+              </div>
+              <div className="pen-sizes">
+                {PEN_SIZES.map((s) => (
+                  <button
+                    key={s.label}
+                    type="button"
+                    className={`size-btn ${penWidth === s.width ? 'active' : ''}`}
+                    title={s.label}
+                    onClick={() => setPenWidth(s.width)}
+                  >
+                    <span style={{ width: s.width * 3, height: s.width * 3 }} />
+                  </button>
+                ))}
+              </div>
+              <span className="draft-sep" />
+              <button className="tool" type="button" onClick={() => draftRef.current?.zoomBy(0.8)}>
+                −
+              </button>
+              <span className="zoom-label">{zoom}%</span>
+              <button className="tool" type="button" onClick={() => draftRef.current?.zoomBy(1.25)}>
+                +
+              </button>
+              <button className="tool" type="button" onClick={() => draftRef.current?.resetView()}>
+                复位
+              </button>
+            </div>
+          </div>
         </section>
 
         {/* +1 栏 */}

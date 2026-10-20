@@ -104,6 +104,11 @@ body {
   background: #3a4453;
 }
 
+/* 草稿纸栏是固定视口（平移/缩放发生在画布内），自身不滚动 */
+.main-right {
+  overflow: hidden;
+}
+
 .panel-title {
   margin: 0;
   font-size: 13px;
@@ -343,38 +348,21 @@ body {
   border-color: #3a4453;
 }
 
-/* 草稿纸舞台 */
-.draft-stage {
+/* 草稿纸：无限画布 + 浮动工具栏 */
+.draft-wrap {
   position: relative;
-  flex: 1 0 auto;
-  min-height: 145vh;
+  flex: 1;
+  min-height: 0;
   border: 1px solid var(--border);
   border-radius: 10px;
-  background: #10141b;
   overflow: hidden;
-  touch-action: none;
+  background: #10141b;
 }
 
-.paper-lines {
+.draft-stage {
   position: absolute;
   inset: 0;
-  pointer-events: none;
-}
-
-.paper-blank .paper-lines {
-  background: none;
-}
-
-.paper-ruled .paper-lines {
-  background-image: repeating-linear-gradient(
-    to bottom,
-    transparent 0 47px,
-    rgba(255, 255, 255, 0.07) 47px 48px
-  );
-}
-
-.paper-code .paper-lines {
-  background: linear-gradient(180deg, #0d1117, #10141b);
+  touch-action: none;
 }
 
 .draft-canvas {
@@ -393,12 +381,13 @@ body {
 
 .draft-hint {
   position: absolute;
-  inset: 0;
+  left: 0;
+  right: 0;
+  top: 12px;
   display: flex;
-  align-items: center;
   justify-content: center;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 11px;
   pointer-events: none;
 }
 
@@ -409,11 +398,85 @@ body {
   border: 0;
   outline: none;
   resize: none;
-  background: transparent;
+  background: #0d1117;
   color: #c9d1d9;
   font-family: 'Cascadia Code', Consolas, monospace;
   font-size: 13px;
   line-height: 1.6;
+}
+
+.draft-float {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(22, 26, 33, 0.92);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.pen-colors {
+  display: flex;
+  gap: 4px;
+}
+
+.color-dot {
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.color-dot.active {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.pen-sizes {
+  display: flex;
+  gap: 4px;
+}
+
+.size-btn {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel-2);
+  cursor: pointer;
+}
+
+.size-btn span {
+  display: block;
+  border-radius: 50%;
+  background: #e6e9ef;
+}
+
+.size-btn.active {
+  border-color: var(--accent);
+}
+
+.draft-sep {
+  width: 1px;
+  height: 18px;
+  background: var(--border);
+}
+
+.zoom-label {
+  min-width: 34px;
+  text-align: center;
+  font-size: 11px;
+  color: var(--muted);
 }
 
 @media (max-width: 1200px) {
